@@ -2,6 +2,26 @@
   const root = document.documentElement;
   const storageKey = 'opencure-theme';
 
+  function ensureFavicon() {
+    const href = '/favicon.svg?v=2';
+    let icon = document.querySelector('link[rel="icon"]');
+    if (!icon) {
+      icon = document.createElement('link');
+      icon.rel = 'icon';
+      document.head.appendChild(icon);
+    }
+    icon.type = 'image/svg+xml';
+    icon.href = href;
+
+    let shortcut = document.querySelector('link[rel="shortcut icon"]');
+    if (!shortcut) {
+      shortcut = document.createElement('link');
+      shortcut.rel = 'shortcut icon';
+      document.head.appendChild(shortcut);
+    }
+    shortcut.href = href;
+  }
+
   function getSavedTheme() {
     try { return localStorage.getItem(storageKey); } catch (_) { return null; }
   }
@@ -27,6 +47,7 @@
     });
   }
 
+  ensureFavicon();
   applyTheme(getSavedTheme() || root.dataset.theme || preferredTheme());
 
   document.addEventListener('click', (event) => {
