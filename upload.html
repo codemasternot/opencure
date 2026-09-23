@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload Genomic Data | OpenCure RNA</title>
+  <meta name="description" content="Secure research intake for paired healthy and cancer genomic sequence data submitted to OpenCure RNA.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('opencure-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(e){document.documentElement.dataset.theme='light'}</script>
+  <link rel="stylesheet" href="assets/site.css">
+  <script defer src="assets/theme.js"></script>
+  <style>
+    .upload-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(280px,.85fr);gap:24px;align-items:start}
+    .upload-card{padding:30px}
+    .upload-zone{border:1.5px dashed var(--line);border-radius:var(--radius);padding:22px;background:var(--bg)}
+    .upload-zone strong{display:block;margin-bottom:6px}.upload-zone p{margin:0 0 14px;color:var(--muted);font-size:14px}
+    .upload-zone input[type=file]{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+    .privacy-box{border-left:4px solid var(--amber);padding:18px 20px;background:var(--surface);border-radius:0 var(--radius) var(--radius) 0}
+    .privacy-box p{margin:0;color:var(--muted)}
+    .status{display:none;margin-top:18px;padding:14px 16px;border-radius:10px;background:var(--soft-teal);border:1px solid rgba(12,139,133,.26)}
+    .check-row{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;margin-top:12px;color:var(--muted);font-size:14px}.check-row input{margin-top:4px}
+    .file-meta{margin-top:10px;color:var(--muted);font-size:13px}
+    @media(max-width:900px){.upload-layout{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<header class="topbar">
+  <div class="shell">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="index.html"><span class="mark" aria-hidden="true"></span><span>OpenCure RNA</span></a>
+      <div class="nav-links">
+        <a href="platform.html">Platform</a>
+        <a href="research.html">Research</a>
+        <a href="costs.html">Costs</a>
+        <a href="ledger.html">Ledger</a>
+        <a href="nonprofit.html">Nonprofit</a>
+        <a href="upload.html">Upload</a>
+      </div>
+      <div class="nav-actions">
+        <button class="theme-toggle" type="button" data-theme-toggle><span data-theme-icon>☾</span><span class="theme-label" data-theme-label>Dark</span></button>
+        <a class="button secondary" href="collaborate.html">Collaborate</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="shell">
+      <div class="breadcrumb"><a href="index.html">Home</a><span>→</span><span>Genomic data intake</span></div>
+      <div class="eyebrow">Research intake</div>
+      <h1>Submit paired healthy and cancer genomic sequence data.</h1>
+      <p>Doctors, laboratories, researchers, and individuals can prepare a paired normal/tumor sequence submission for OpenCure RNA research review. The goal is to compare cancer-associated variation against the person’s healthy reference sample.</p>
+      <div class="privacy-box"><p><strong>Privacy requirement:</strong> do not put names, national IDs, medical-record numbers, addresses, dates of birth, or other direct identifiers in filenames or metadata. Genomic data itself remains highly sensitive and potentially identifying.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="shell upload-layout">
+      <article class="card upload-card">
+        <div class="kicker">Paired sample submission</div>
+        <h2 style="font-size:34px;margin-bottom:10px">Prepare genomic files</h2>
+        <p class="note" style="margin-top:0">Supported research formats include FASTQ, FASTA, VCF, BAM, and CRAM, including common gzip-compressed variants.</p>
+
+        <form id="genomic-upload-form" class="form-grid" novalidate>
+          <div class="field">
+            <label for="submitter-role">I am submitting as</label>
+            <select id="submitter-role" required>
+              <option value="">Select role</option>
+              <option>Doctor / clinician</option>
+              <option>Laboratory / sequencing provider</option>
+              <option>Researcher</option>
+              <option>Individual / patient</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="case-id">Research case ID</label>
+            <input id="case-id" type="text" placeholder="e.g. OC-2026-001" autocomplete="off" required>
+          </div>
+          <div class="field full">
+            <label for="cancer-type">Cancer type or research focus</label>
+            <input id="cancer-type" type="text" placeholder="Use a general research description; avoid direct personal identifiers" autocomplete="off">
+          </div>
+
+          <div class="field full upload-zone">
+            <strong>Healthy / normal sample</strong>
+            <p>Upload the matched non-cancerous reference sequence or derived variant file.</p>
+            <input id="normal-file" type="file" required accept=".fastq,.fq,.fasta,.fa,.fna,.vcf,.bam,.cram,.gz">
+            <div id="normal-meta" class="file-meta">No file selected.</div>
+          </div>
+
+          <div class="field full upload-zone">
+            <strong>Cancer / tumor sample</strong>
+            <p>Upload the matched cancerous sample sequence or derived variant file.</p>
+            <input id="tumor-file" type="file" required accept=".fastq,.fq,.fasta,.fa,.fna,.vcf,.bam,.cram,.gz">
+            <div id="tumor-meta" class="file-meta">No file selected.</div>
+          </div>
+
+          <div class="field full">
+            <label for="notes">Sequencing notes (optional)</label>
+            <textarea id="notes" placeholder="Platform, genome build, sequencing depth, tumor purity estimate, library type, or other research-relevant context. Do not include direct identifiers."></textarea>
+          </div>
+
+          <label class="check-row field full"><input id="authority" type="checkbox" required><span>I confirm that I am authorized to submit these files for research review or I am submitting my own genomic data.</span></label>
+          <label class="check-row field full"><input id="deidentified" type="checkbox" required><span>I confirm that filenames and metadata do not contain direct personal identifiers.</span></label>
+          <label class="check-row field full"><input id="research-only" type="checkbox" required><span>I understand that OpenCure RNA is a research initiative and this submission is not medical advice, diagnosis, treatment, or a clinical decision.</span></label>
+
+          <div class="field full">
+            <button class="button primary" type="submit">Prepare secure upload</button>
+            <div id="upload-status" class="status" role="status" aria-live="polite"></div>
+          </div>
+        </form>
+      </article>
+
+      <aside class="card">
+        <div class="icon">DNA</div>
+        <h3>What happens to the files?</h3>
+        <p>At this stage the page validates the paired file selection in the browser. The files are <strong>not transmitted yet</strong> because OpenCure still needs a dedicated encrypted genomic-data storage endpoint with access control, audit logging, retention rules, and research-consent handling.</p>
+        <div class="list" style="margin-top:22px">
+          <div class="list-item"><span class="check">✓</span><div><strong>Paired analysis</strong><span>Normal and tumor data are kept logically linked to the same research case.</span></div></div>
+          <div class="list-item"><span class="check">✓</span><div><strong>No direct identifiers</strong><span>Use a research case ID rather than names or patient-record numbers.</span></div></div>
+          <div class="list-item"><span class="check">✓</span><div><strong>Private storage only</strong><span>Genomic files should never be placed in a public GitHub repository or public object-storage bucket.</span></div></div>
+          <div class="list-item"><span class="check">✓</span><div><strong>Human review</strong><span>Research outputs remain investigational and require qualified scientific and clinical validation.</span></div></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<footer><div class="shell footer-inner"><span>OpenCure RNA — research information only. Not medical advice, diagnosis, or treatment.</span><div class="footer-links"><a href="index.html">Home</a><a href="research.html">Research</a><a href="upload.html">Upload</a><a href="collaborate.html">Collaborate</a></div></div></footer>
+
+<script>
+  const form = document.getElementById('genomic-upload-form');
+  const statusBox = document.getElementById('upload-status');
+  const allowed = ['.fastq','.fq','.fasta','.fa','.fna','.vcf','.bam','.cram','.gz'];
+
+  function formatBytes(bytes){
+    if(!Number.isFinite(bytes) || bytes <= 0) return '0 B';
+    const units=['B','KB','MB','GB','TB'];
+    const i=Math.min(Math.floor(Math.log(bytes)/Math.log(1024)), units.length-1);
+    return `${(bytes/Math.pow(1024,i)).toFixed(i ? 1 : 0)} ${units[i]}`;
+  }
+
+  function bindFile(inputId, metaId){
+    const input=document.getElementById(inputId);
+    const meta=document.getElementById(metaId);
+    input.addEventListener('change',()=>{
+      const file=input.files && input.files[0];
+      meta.textContent=file ? `${file.name} · ${formatBytes(file.size)}` : 'No file selected.';
+    });
+  }
+  bindFile('normal-file','normal-meta');
+  bindFile('tumor-file','tumor-meta');
+
+  form.addEventListener('submit',(event)=>{
+    event.preventDefault();
+    statusBox.style.display='block';
+    if(!form.checkValidity()){
+      form.reportValidity();
+      statusBox.textContent='Complete the required fields and confirmations before preparing the submission.';
+      return;
+    }
+    const normal=document.getElementById('normal-file').files[0];
+    const tumor=document.getElementById('tumor-file').files[0];
+    if(!normal || !tumor){
+      statusBox.textContent='Select both the healthy/normal file and the cancer/tumor file.';
+      return;
+    }
+    statusBox.innerHTML='<strong>Paired submission is ready.</strong> Your files remain on this device for now. The next engineering step is to connect this page to OpenCure’s encrypted private upload service before any genomic data is transmitted.';
+  });
+</script>
+</body>
+</html>
